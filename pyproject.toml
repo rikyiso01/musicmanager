@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "musicmanager"
+version = "0.1.0"
+description = ""
+authors = ["rikyiso01 <riky.isola@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.scripts]
+musicmanager = 'musicmanager.__main__:entry'
+
+[tool.poetry.dependencies]
+python = "^3.12"
+typer = "^0.12.3"
+pydantic = "^2.8.2"
+tqdm = "^4.66.5"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
