@@ -13,7 +13,7 @@ def download(playlist:Path,outdir:Path,output:Path):
     with playlist.open('rt') as f:
         m3u=load(f)
     result:list[dict[str|None,str|None]]=[]
-    for song in tqdm(m3u):
+    for song in tqdm(m3u,desc=playlist.name):
         new_entry:dict[str|None,str|None]={}
         if "PLAYLIST" in song:
             new_entry["PLAYLIST"]=song["PLAYLIST"]
