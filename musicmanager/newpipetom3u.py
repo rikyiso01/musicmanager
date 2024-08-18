@@ -61,14 +61,16 @@ def newpipetom3u(path: Path, outdir: Path):
         tmpdir = Path(tmpdir)
         with ZipFile(path) as file:
             file.extract(DATABASE_FILE, tmpdir)
-        with connect(tmpdir / DATABASE_FILE) as connection:
-            cursor = connection.cursor()
-            playlists = get_playlists(cursor)
+            extract_database(tmpdir/DATABASE_FILE,outdir)
+
+def extract_database(file:Path,outdir:Path):
+    with connect(file) as connection:
+        cursor = connection.cursor()
+        playlists = get_playlists(cursor)
     for playlist in playlists:
         out = outdir / f"{playlist.title}.m3u"
         with out.open("wt") as f:
             dump(playlist.to_m3u(), f)
-
 
 def read_playlists(cursor: Cursor):
     return [
