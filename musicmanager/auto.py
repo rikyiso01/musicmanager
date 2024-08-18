@@ -1,24 +1,22 @@
 from pathlib import Path
-from tomllib import load
-from pydantic import TypeAdapter
-from dataclasses import dataclass
-
+from typing import Optional
 from musicmanager.download import download
-from musicmanager.newpipetom3u import newpipetom3u
-
-@dataclass
-class Config:
-    newpipe_playlists_dir:Path
-    playlists:list[Path]
-    playlists_dir:Path
-    songs_dir:Path
+from musicmanager.neobackup import neobackup
+from os import environ
 
 
-
-def auto(file:Path,newpipe:Path):
-    with file.open('rb') as f:
-        config=load(f)
-    config=TypeAdapter(Config).validate_python(config)
-    newpipetom3u(newpipe,config.newpipe_playlists_dir)
-    for playlist in config.playlists:
-        download(config.newpipe_playlists_dir/f"{playlist}.m3u",config.songs_dir,config.playlists_dir/f"{playlist}.m3u")
+def auto(playlists: list[str], folder: Optional[Path] = None):
+    if folder is None:
+        folder = Path(environ["XDG_MUSIC_DIR"])
+    neobackup_folder = folder / "neobackup"
+    newpipe_folder = folder / "newpipe"
+    songs_folder = folder / "songs"
+    playlists_folder = folder / "playlists"
+    neobackup(neobackup_folder, newpipe_folder)
+    for playlist in playlists:
+        playlist_file = f"{playlist}.m3u"
+        download(
+            newpipe_folder / playlist_file,
+            songs_folder,
+            playlists_folder / playlist_file,
+        )

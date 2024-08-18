@@ -31,11 +31,15 @@ def download(playlist:Path,outdir:Path,output:Path):
         dump(result,f)
 
 def ensure_id(id:str,outdir:Path)->Path|None:
+    blocked_file=outdir/f"{id}.blocked"
+    if blocked_file.exists():
+        return None
     for f in outdir.iterdir():
         if id in f.name:
             return f
     exitcode=call([YOUTUBE_DL,"--no-playlist","--extract-audio","--add-metadata","--embed-thumbnail",get_youtube_url(id)],cwd=outdir)
     if exitcode==1:
+        blocked_file.touch()
         return None
     elif exitcode!=0:
         assert False
